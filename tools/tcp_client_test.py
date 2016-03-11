@@ -27,9 +27,15 @@ def resolveRecvdata(data):
 def test_auth(the_socket, logic_id, platform):
     the_socket.connect(('localhost', 8888))
     data = get_auth_package(logic_id, platform)
-    time.sleep(20)
+    # time.sleep(20)
 
-    the_socket.send(data)
+    the_socket.send(data[:2])
+    time.sleep(2)
+    the_socket.send(data[2:4])
+    time.sleep(2)
+    the_socket.send(data[4:8])
+    time.sleep(2)
+    the_socket.send(data[8:])
     data = the_socket.recv(1024)
     data = resolveRecvdata(data)
     print data
@@ -49,7 +55,7 @@ if __name__ == "__main__":
     socket_list = [socket.socket(socket.AF_INET, socket.SOCK_STREAM) for i in xrange(1)]
     test_auth(socket_list[0], 2041718105, "pc")
     # for logic_id in xrange(3):
-    #     for platform in xrange(2):
+    # for platform in xrange(2):
     #         if platform == 0:
     #             test_auth(socket_list[logic_id * 2 + platform], logic_id, "pc")
     #         else:

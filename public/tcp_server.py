@@ -15,6 +15,7 @@ import tornado.ioloop
 import public.global_manager
 import public.simple_log
 
+
 OUT_OF_TIME = 10
 
 
@@ -55,12 +56,16 @@ def initialize(io_loop):
 
 class ServerConnect(object):
     _HEAD_SIZE = 4
+    _READ_SIZE = 10240
 
     def __init__(self, stream, address):
         self.__address = address
         self.__stream = stream
         self.__stream.set_close_callback(self.on_connect_close)
         self.__connect_time = int(time.time())
+        self.__data_buffer = ""
+        self.__protocol_content_length = self._HEAD_SIZE
+        self.__protocol = False
 
     @property
     def connect_time(self):
@@ -85,35 +90,30 @@ class ServerConnect(object):
         # print(self.get_address_flag(), "start_server")
         waite_connect_manager = public.global_manager.get_object(public.global_manager.WAITE_CONNECT_MANAGER)
         waite_connect_manager.add_connect(self)
-        self.read_head_size()
+        self.__stream.read_bytes(self._READ_SIZE, callback=self.call_back, streaming_callback=self.read_buffer_callback)
 
     def send_message(self, data):
         send_content = struct.pack(b"!I", len(data) + self._HEAD_SIZE) + data
         self.__stream.write(send_content)
 
-    def read_head_size(self):
-        # print(self.get_address_flag(), "read_head_size")
-        callback = functools.partial(self.read_buffer_callback, self._HEAD_SIZE)
-        self.__stream.read_bytes(self._HEAD_SIZE, streaming_callback=callback)
+    def call_back(self, data):
+        print("callback", len(data))
 
-    def read_buffer_callback(self, head_size, size_buffer):
-        if not self.check_buff_size(head_size, len(size_buffer)):
-            return
-        size = struct.unpack(b"!I", size_buffer)[0] - head_size
-        if size < 0:
-            print("read_buffer_callback error")
-            return
-        # print(self.get_address_flag(), "read_buffer_callback", size, size_buffer)
-        callback = functools.partial(self.handle_receive, size)
-        self.__stream.read_bytes(size, streaming_callback=callback)
-
-    def handle_receive(self, size, data):
-        # print(self.get_address_flag(), "handle_receive", len(data))
-        if not self.check_buff_size(size, len(data)):
-            return
-        self.handle_process(data)
-        self.read_head_size()
-        # print(self.get_address_flag(), "handle_receive error", size, len(data))
+    def read_buffer_callback(self, size_buffer):
+        self.__data_buffer += size_buffer
+        print(self.get_address_flag(), "read_data_buffer", len(self.__data_buffer), self.__protocol_content_length, self.__protocol)
+        while self.__data_buffer:
+            if len(self.__data_buffer) < self.__protocol_content_length:
+                break
+            cur_content = self.__data_buffer[:self.__protocol_content_length]
+            self.__data_buffer = self.__data_buffer[self.__protocol_content_length:]
+            if not self.__protocol:
+                self.__protocol = True
+                self.__protocol_content_length = struct.unpack(b"!I", cur_content)[0] - self._HEAD_SIZE
+            else:
+                self.__protocol = False
+                self.__protocol_content_length = self._HEAD_SIZE
+                self.handle_process(cur_content)
 
     def handle_process(self, data):
         raise NotImplementedError()
