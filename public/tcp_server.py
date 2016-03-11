@@ -4,7 +4,6 @@
     3/12/2016
 """
 from __future__ import absolute_import, print_function, unicode_literals
-import functools
 import heapq
 import struct
 import time
@@ -77,10 +76,6 @@ class ServerConnect(object):
     def on_connect_close(self):
         # print(self.get_address_flag(), "close>>>>>>>>>>>")
         self.clean_waite()
-        self.on_connect_close_process()
-
-    def on_connect_close_process(self):
-        pass
 
     def clean_waite(self):
         waite_connect_manager = public.global_manager.get_object(public.global_manager.WAITE_CONNECT_MANAGER)
@@ -90,18 +85,18 @@ class ServerConnect(object):
         # print(self.get_address_flag(), "start_server")
         waite_connect_manager = public.global_manager.get_object(public.global_manager.WAITE_CONNECT_MANAGER)
         waite_connect_manager.add_connect(self)
-        self.__stream.read_bytes(self._READ_SIZE, callback=self.call_back, streaming_callback=self.read_buffer_callback)
+        self.__stream.read_until_close(callback=self.on_close_callback, streaming_callback=self.read_buffer_callback)
 
     def send_message(self, data):
         send_content = struct.pack(b"!I", len(data) + self._HEAD_SIZE) + data
         self.__stream.write(send_content)
 
-    def call_back(self, data):
-        print("callback", len(data))
+    def on_close_callback(self, data):
+        raise NotImplementedError()
 
     def read_buffer_callback(self, size_buffer):
         self.__data_buffer += size_buffer
-        print(self.get_address_flag(), "read_data_buffer", len(self.__data_buffer), self.__protocol_content_length, self.__protocol)
+        # print(self.get_address_flag(), "read_data_buffer", len(self.__data_buffer), self.__protocol_content_length, self.__protocol)
         while self.__data_buffer:
             if len(self.__data_buffer) < self.__protocol_content_length:
                 break

@@ -28,6 +28,7 @@ class RootServerConnect(public.tcp_server.ServerConnect):
         command = struct.unpack(b"!I", data[:4])[0]
         data = data[4:]
         content = json.loads(data)
+        print("handle_process", content)
         process = HANDLE_PROCESS.get(command)
         if not process:
             print("handle_process no math", content)
@@ -36,9 +37,8 @@ class RootServerConnect(public.tcp_server.ServerConnect):
         # except BaseException, e:
         #     print("handle_process error", e)
 
-    def on_connect_close_process(self):
-        pass
-
+    def on_close_callback(self, data):
+        print (self.get_address_flag(), "on_connect_close_process", len(data))
 
 class RootTcpServer(public.tcp_server.SimpleTcpServer):
     def create_server(self, stream, address):

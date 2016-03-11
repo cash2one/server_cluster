@@ -58,8 +58,8 @@ class AuthDataReceive(public.task_process.DataReceive):
         return self.__uid, self.__token, self.__conn
 
     def success_process(self, **kwargs):
-        message = {"code": 0}
-        message = json.dumps(message)
+        message = {"code": 0, "message": "成功"}
+        message = json.dumps(message).encode("utf-8")
         self.__conn.send_message(struct.pack(b"!I", protocol.ON_AUTH) + message)
 
 

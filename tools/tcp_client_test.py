@@ -30,11 +30,11 @@ def test_auth(the_socket, logic_id, platform):
     # time.sleep(20)
 
     the_socket.send(data[:2])
-    time.sleep(2)
+    # time.sleep(2)
     the_socket.send(data[2:4])
-    time.sleep(2)
+    # time.sleep(2)
     the_socket.send(data[4:8])
-    time.sleep(2)
+    # time.sleep(2)
     the_socket.send(data[8:])
     data = the_socket.recv(1024)
     data = resolveRecvdata(data)
@@ -46,20 +46,21 @@ def get_auth_package(logic_id, platform):
         "uid": logic_id,
         "token": "token",
         "platform": platform,
+        "test": "测试",
     }
     return get_send_data(1, send_dict)
 
 
 if __name__ == "__main__":
     begin = time.time()
-    socket_list = [socket.socket(socket.AF_INET, socket.SOCK_STREAM) for i in xrange(1)]
-    test_auth(socket_list[0], 2041718105, "pc")
-    # for logic_id in xrange(3):
-    # for platform in xrange(2):
-    #         if platform == 0:
-    #             test_auth(socket_list[logic_id * 2 + platform], logic_id, "pc")
-    #         else:
-    #             test_auth(socket_list[logic_id * 2 + platform], logic_id, "cc")
+    socket_list = [socket.socket(socket.AF_INET, socket.SOCK_STREAM) for i in xrange(6)]
+    # test_auth(socket_list[0], 2041718105, "pc")
+    for logic_id in xrange(3):
+        for platform in xrange(2):
+            if platform == 0:
+                test_auth(socket_list[logic_id * 2 + platform], logic_id, "pc")
+            else:
+                test_auth(socket_list[logic_id * 2 + platform], logic_id, "cc")
     for the_scoket in socket_list:
         the_scoket.close()
     print "time_cose:", time.time() - begin
