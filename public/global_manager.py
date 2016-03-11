@@ -32,6 +32,9 @@ def clear_thread():
 
 
 HTTP_REQUEST_MANAGER = "http_request_manager"
+WAITE_CONNECT_MANAGER = "waite_client_manager"
+AUTH_CONNECT_MANAGER = "auth_connect_manager"
+
 GLOBAL_OBJECT = {}
 
 

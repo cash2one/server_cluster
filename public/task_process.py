@@ -4,7 +4,7 @@
     3/4/2016
 """
 from __future__ import absolute_import, print_function, unicode_literals
-
+import functools
 import time
 import threading
 import public.simple_log
@@ -32,16 +32,12 @@ class Process(object):
         raise NotImplementedError()
 
 
-class Recv(object):
-    def Unpack(self):
-        pass
-
+class DataReceive(object):
     def get_param(self):
         pass
 
-    def handle_recv(self, process):
-        process.set_callback(self.success_process)
-        process.SetErrorCallback(self.error_process)
+    def handle_data_receive(self, process):
+        process.set_callback(self.success_process, self.error_process)
         process.start_process()
 
     def error_process(self, **kwargs):
@@ -49,6 +45,14 @@ class Recv(object):
 
     def success_process(self, **kwargs):
         pass
+
+
+def handle_process(func):
+    @functools.wraps(func)
+    def wrap(*args, **kwargs):
+        data_receive, process = func(*args, **kwargs)
+        data_receive.handle_data_receive(process)
+    return wrap
 
 
 class MultiProcess(object):

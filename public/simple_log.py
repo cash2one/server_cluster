@@ -33,7 +33,7 @@ def init_log_dir(log_path):
         os.mkdir(error_path)
     info_path = log_path + "/info_log"
     if not os.path.exists(info_path):
-        os.mkdir(log_path)
+        os.mkdir(info_path)
 
 
 def error_write(error_info):
@@ -122,6 +122,10 @@ class Log(threading.Thread):
 
 def log(log_level, content):
     public.global_manager.get_thread(public.global_manager.LOG_THREAD).log_string(log_level, content)
+
+
+def info(content):
+    log(INFO, content)
 
 
 def initialize(log_path, server_name):
