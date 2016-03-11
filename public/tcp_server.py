@@ -13,7 +13,7 @@ import tornado.tcpserver
 import tornado.ioloop
 
 import public.global_manager
-
+import public.simple_log
 
 OUT_OF_TIME = 10
 
@@ -32,7 +32,7 @@ class WaiteConnectManager(object):
             if self.__connects[0].bool_time_out(time_now):
                 connect = heapq.heappop(self.__connects)
                 connect.close_connect()
-                # print(self, "remove_old_socket ing", connect)
+                public.simple_log.error("remove_old_socket " + connect.get_address_flag())
             else:
                 break
         # print(self, "remove_old_socket end", self.__connects)

@@ -27,6 +27,8 @@ def resolveRecvdata(data):
 def test_auth(the_socket, logic_id, platform):
     the_socket.connect(('localhost', 8888))
     data = get_auth_package(logic_id, platform)
+    time.sleep(20)
+
     the_socket.send(data)
     data = the_socket.recv(1024)
     data = resolveRecvdata(data)
@@ -52,7 +54,6 @@ if __name__ == "__main__":
     #             test_auth(socket_list[logic_id * 2 + platform], logic_id, "pc")
     #         else:
     #             test_auth(socket_list[logic_id * 2 + platform], logic_id, "cc")
-    time.sleep(2)
     for the_scoket in socket_list:
         the_scoket.close()
     print "time_cose:", time.time() - begin

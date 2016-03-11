@@ -121,11 +121,19 @@ class Log(threading.Thread):
 
 
 def log(log_level, content):
-    public.global_manager.get_thread(public.global_manager.LOG_THREAD).log_string(log_level, content)
+    log_obj = public.global_manager.get_thread(public.global_manager.LOG_THREAD)
+    if not log_obj:
+        print("yjl", log_level, content)
+        return
+    log_obj.log_string(log_level, content)
 
 
 def info(content):
     log(INFO, content)
+
+
+def error(content):
+    log(ERROR, content)
 
 
 def initialize(log_path, server_name):
