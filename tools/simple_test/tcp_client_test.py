@@ -8,14 +8,13 @@ import socket
 import json
 import time
 
-
 def get_send_data(cmd, send_dict):
     send_string = json.dumps(send_dict)
     data = struct.pack('!II', len(send_string) + 8, cmd)
     return data + send_string
 
 
-def resolveRecvdata(data):
+def receive_data(data):
     head = struct.unpack('!2I', data[:8])
     length = head[0]
     data_content = data[8:length]
@@ -24,7 +23,7 @@ def resolveRecvdata(data):
     return data_dict
 
 
-def test_auth(the_socket, logic_id, platform):
+def user_auth(the_socket, logic_id, platform):
     the_socket.connect(('localhost', 8888))
     data = get_auth_package(logic_id, platform)
     # time.sleep(20)
@@ -37,7 +36,7 @@ def test_auth(the_socket, logic_id, platform):
     # time.sleep(2)
     the_socket.send(data[8:])
     data = the_socket.recv(1024)
-    data = resolveRecvdata(data)
+    data = receive_data(data)
     print data
 
 
@@ -51,17 +50,21 @@ def get_auth_package(logic_id, platform):
     return get_send_data(1, send_dict)
 
 
-if __name__ == "__main__":
+
+def test_server_test():
     begin = time.time()
     socket_list = [socket.socket(socket.AF_INET, socket.SOCK_STREAM) for i in xrange(6)]
     # test_auth(socket_list[0], 2041718105, "pc")
     for logic_id in xrange(3):
         for platform in xrange(2):
             if platform == 0:
-                test_auth(socket_list[logic_id * 2 + platform], logic_id, "pc")
+                user_auth(socket_list[logic_id * 2 + platform], logic_id, "pc")
             else:
-                test_auth(socket_list[logic_id * 2 + platform], logic_id, "cc")
+                user_auth(socket_list[logic_id * 2 + platform], logic_id, "cc")
     for the_scoket in socket_list:
         the_scoket.close()
     print "time_cose:", time.time() - begin
+
+if __name__ == "__main__":
+    test_server_test()
 

@@ -14,8 +14,10 @@ import public.tcp_server
 import root_logic.user.auth
 import public.global_manager
 import public.simple_log
+import public.tcp_client
 import config
 import protocol
+
 
 HANDLE_PROCESS = {
     protocol.ON_AUTH: root_logic.user.auth.on_auth
@@ -35,10 +37,11 @@ class RootServerConnect(public.tcp_server.ServerConnect):
             return
         process(self, content)
         # except BaseException, e:
-        #     print("handle_process error", e)
+        # print("handle_process error", e)
 
     def on_close_callback(self, data):
-        print (self.get_address_flag(), "on_connect_close_process", len(data))
+        print(self.get_address_flag(), "on_connect_close_process", len(data))
+
 
 class RootTcpServer(public.tcp_server.SimpleTcpServer):
     def create_server(self, stream, address):
@@ -63,6 +66,9 @@ def main():
     public.tcp_server.initialize(io_loop)
     tcp_server = RootTcpServer()
     tcp_server.listen(port)
+
+    tcp_client = public.tcp_client.TcpClient(io_loop, "192.168.189.129", 8888)
+    tcp_client.start_server()
     io_loop.start()
 
 

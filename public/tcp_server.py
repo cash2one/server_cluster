@@ -14,6 +14,8 @@ import tornado.ioloop
 import public.global_manager
 import public.simple_log
 
+import public.tcp_client
+
 
 OUT_OF_TIME = 10
 
@@ -53,18 +55,13 @@ def initialize(io_loop):
     io_loop.call_later(OUT_OF_TIME, waite_connect_manager.remove_old_socket, io_loop)
 
 
-class ServerConnect(object):
-    _HEAD_SIZE = 4
-    _READ_SIZE = 10240
-
+class ServerConnect(public.tcp_client.Connect):
     def __init__(self, stream, address):
+        public.tcp_client.Connect.__init__(self)
         self.__address = address
         self.__stream = stream
         self.__stream.set_close_callback(self.on_connect_close)
         self.__connect_time = int(time.time())
-        self.__data_buffer = ""
-        self.__protocol_content_length = self._HEAD_SIZE
-        self.__protocol = False
 
     @property
     def connect_time(self):
@@ -90,36 +87,6 @@ class ServerConnect(object):
     def send_message(self, data):
         send_content = struct.pack(b"!I", len(data) + self._HEAD_SIZE) + data
         self.__stream.write(send_content)
-
-    def on_close_callback(self, data):
-        raise NotImplementedError()
-
-    def read_buffer_callback(self, size_buffer):
-        self.__data_buffer += size_buffer
-        # print(self.get_address_flag(), "read_data_buffer", len(self.__data_buffer), self.__protocol_content_length, self.__protocol)
-        while self.__data_buffer:
-            if len(self.__data_buffer) < self.__protocol_content_length:
-                break
-            cur_content = self.__data_buffer[:self.__protocol_content_length]
-            self.__data_buffer = self.__data_buffer[self.__protocol_content_length:]
-            if not self.__protocol:
-                self.__protocol = True
-                self.__protocol_content_length = struct.unpack(b"!I", cur_content)[0] - self._HEAD_SIZE
-            else:
-                self.__protocol = False
-                self.__protocol_content_length = self._HEAD_SIZE
-                self.handle_process(cur_content)
-
-    def handle_process(self, data):
-        raise NotImplementedError()
-
-    def check_buff_size(self, need_size, receive_size):
-        if need_size == receive_size:
-            return True
-        else:
-            # self.__stream.close()
-            print("check_buff_size error", need_size, receive_size)
-            return False
 
     def close_connect(self):
         self.__stream.close()
