@@ -24,7 +24,7 @@ def receive_data(data):
 
 
 def user_auth(the_socket, logic_id, platform):
-    the_socket.connect(('localhost', 8888))
+    the_socket.connect(('localhost', 9999))
     data = get_auth_package(logic_id, platform)
     # time.sleep(20)
 

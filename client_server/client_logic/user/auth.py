@@ -5,33 +5,16 @@
 """
 from __future__ import unicode_literals, print_function, absolute_import
 import struct
-import json
+import public.pack_dict
 import public.task_process
 import public.global_manager
 import public.simple_log
-import protocol
+import public.connect_data
+import client_logic.protocol
 
-class AuthClient(object):
-    __slot__ = ["__type", "__id"]
-
-    def __init__(self, client_type, client_id):
-        self.__type = client_type
-        self.__id = client_id
-
-
-class ClientManager(object):
-    def __init__(self, client_type):
-        self.__type = client_type
-        self.__client = {}
-
-
-class AuthManager(object):
-    TYPE_LIST = ["client", "login_server"]
-
-    def __init__(self):
-        self.__manager = {}
-        for client_type in self.TYPE_LIST:
-            self.__manager[client_type] = ClientManager(client_type)
+class AuthClient(public.connect_data.Client):
+    def __init__(self, client_id, conn):
+        public.connect_data.Client.__init__(self, client_id, conn)
 
 
 class AuthProcess(public.task_process.Process):
@@ -59,8 +42,8 @@ class AuthDataReceive(public.task_process.DataReceive):
 
     def success_process(self, **kwargs):
         message = {"code": 0, "message": "成功"}
-        message = json.dumps(message).encode("utf-8")
-        self.__conn.send_message(struct.pack(b"!I", protocol.ON_AUTH) + message)
+        message = public.pack_dict.dumps_json_to_utf8(message)
+        self.__conn.send_message(struct.pack(b"!I", client_logic.protocol.ON_AUTH) + message)
 
 
 @public.task_process.handle_process

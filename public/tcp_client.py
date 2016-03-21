@@ -67,22 +67,22 @@ class TcpClient(Connect):
         except BaseException, e:
             self.add_time_callback()
             return
-        send_dict = {
-            "uid": 2041718105,
-            "token": "token",
-            "platform": "cc",
-            "test": "测试",
-        }
-        send_string = json.dumps(send_dict)
+        self.on_auth_server()
+        self.__stream.read_until_close(callback=self.on_close_callback, streaming_callback=self.read_buffer_callback)
+
+    def on_auth_server(self):
+        raise NotImplementedError()
+
+    def send_data(self, data_dict):
+        send_string = json.dumps(data_dict)
         data = struct.pack(b'!II', len(send_string) + 8, 1)
         self.__stream.write(data + send_string)
-        self.__stream.read_until_close(callback=self.on_close_callback, streaming_callback=self.read_buffer_callback)
 
     def on_close_callback(self, data):
         self.add_time_callback()
 
     def handle_process(self, data):
-        print(self.get_address_flag(), "handle_process", data)
+        raise NotImplementedError()
 
     def add_time_callback(self):
         self.__io_loop.call_later(5, self.start_server)
