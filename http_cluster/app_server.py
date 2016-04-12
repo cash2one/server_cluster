@@ -20,6 +20,7 @@ import http_logic.http_request_task
 import http_logic.index
 import http_logic.user.login
 import http_logic.user.register
+import http_logic.home
 
 import config
 
@@ -30,7 +31,11 @@ PORT = 8888
 
 class Home(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
-        self.redirect(r"/compose")
+        page_list = http_logic.home.GetMorePageList()
+        short_info_list = http_logic.home.GetShortInfoList()
+        pic_info_list = http_logic.home.GetPictureShowList()
+        self.render("home.html", page_list=page_list, short_info_list=short_info_list,
+                    picture_show_info=pic_info_list)
 
 
 class Compose(tornado.web.RequestHandler):
@@ -87,7 +92,7 @@ class HttpApplication(tornado.web.Application):
         static_path=os.path.join(os.path.dirname(__file__), "static"),
         debug=True,
     )
-
+    print(APP_SETTING)
     def __init__(self):
         tornado.web.Application.__init__(self, self.URLS, **self.APP_SETTING)
         self.__socket_listen = SocketListen()
@@ -107,7 +112,7 @@ def turn_down_server(signum=0, e=0):
 def main(port):
     signal.signal(signal.SIGTERM, turn_down_server)
     signal.signal(signal.SIGINT, turn_down_server)
-    print("server start", port, "version", config.VERSION)
+    print(os.getcwd(), "server start", port, "version", config.VERSION)
 
     http_logic.http_request_task.initialize()
 

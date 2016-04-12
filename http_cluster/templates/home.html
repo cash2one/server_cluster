@@ -1,8 +1,119 @@
-{% extends "base.html" %}
+<html>
+<head>
+    <script type="text/javascript"
+            src="http://www.francescomalagrino.com/BootstrapPageGenerator/3/js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript"
+            src="http://www.francescomalagrino.com/BootstrapPageGenerator/3/js/jquery-ui"></script>
+    <link href="http://www.francescomalagrino.com/BootstrapPageGenerator/3/css/bootstrap-combined.min.css"
+          rel="stylesheet" media="screen">
+    <script type="text/javascript"
+            src="http://www.francescomalagrino.com/BootstrapPageGenerator/3/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h3>
+                虚度廿七载，两袖空白；余实不才，又谁敢怨！--------捡龙眼
+            </h3>
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#">首页</a>
+                </li>
+                <li>
+                    <a href="#">资料</a>
+                </li>
+                <li class="disabled">
+                    <a href="#">信息</a>
+                </li>
+                <!--<li class="dropdown pull-right">-->
+                <!--<a href="#" data-toggle="dropdown" class="dropdown-toggle">下拉<strong class="caret"></strong></a>-->
+                <!--<ul class="dropdown-menu">-->
+                <!--<li>-->
+                <!--<a href="#">操作</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<a href="#">设置栏目</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<a href="#">更多设置</a>-->
+                <!--</li>-->
+                <!--<li class="divider">-->
+                <!--</li>-->
+                <!--<li>-->
+                <!--<a href="#">分割线</a>-->
+                <!--</li>-->
+                <!--</ul>-->
+                <!--</li>-->
+            </ul>
+            <div class="carousel slide" id="carousel-136455">
+                <ol class="carousel-indicators">
+                    <li data-slide-to="0" data-target="#carousel-136455">
+                    </li>
+                    <li data-slide-to="1" data-target="#carousel-136455" class="active">
+                    </li>
+                    <li data-slide-to="2" data-target="#carousel-136455">
+                    </li>
+                </ol>
+                <div class="carousel-inner">
+                    {% for element in picture_show_info%}
+                    {% if element.active %}
+                    <div class="item active">
+                    {% else %}
+                    <div class="item">
+                    {% end %}
+                        <img alt="" src="{{element.pic_url}}"/>
+                        <div class="carousel-caption">
+                            <h4>{{element.tag}}</h4>
 
-{% block body %}
-  {% for entry in entries %}
-    {% module Entry(entry) %}
-  {% end %}
-  <div><a href="/archive">{{ _("Archive") }}</a></div>
-{% end %}
+                            <p>{{element.detail}}</p>
+                        </div>
+                    </div>
+                    {% end %}
+                    </div>
+                    <a data-slide="prev" href="#carousel-136455" class="left carousel-control">‹</a> <a
+                        data-slide="next"
+                        href="#carousel-136455"
+                        class="right carousel-control">›</a>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>关键词</th>
+                        <th>创建时间</th>
+                    </tr>
+                    </thead>
+                    {% for short_info in short_info_list %}
+                    <tbody>
+                    <tr class="{{short_info.flag}}">
+                        <td>{{short_info.id}}</td>
+                        <td>{{short_info.title}}</td>
+                        <td>{{short_info.keys}}</td>
+                        <td>{{short_info.create_time}}</td>
+                    </tr>
+                    </tbody>
+                    {% end %}
+                </table>
+                <div class="pagination">
+                    <ul>
+                        <li>
+                            <a href="#">上一页</a>
+                        </li>
+                        {% for cur_page in page_list %}
+                        <li><a href="{{cur_page.page_link}}">{{cur_page.page_number}}</a></li>
+                        {% end %}
+                        <li>
+                            <a href="#">下一页</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--<address><strong>Twitter, Inc.</strong><br/> 795 Folsom Ave, Suite 600<br/> San Francisco, CA 94107<br/>-->
+                <!--<abbr title="Phone">P:</abbr> (123) 456-7890-->
+                <!--</address>-->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
