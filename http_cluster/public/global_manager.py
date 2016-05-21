@@ -27,7 +27,7 @@ def clear_thread():
     for thread_object in GLOBAL_THREAD.values():
         try:
             thread_object.stop_thread()
-        except BaseException, e:
+        except BaseException as e:
             print(e)
 
 

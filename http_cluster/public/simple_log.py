@@ -33,7 +33,7 @@ def init_log_dir(log_path):
         os.mkdir(error_path)
     info_path = log_path + "/info_log"
     if not os.path.exists(info_path):
-        os.mkdir(log_path)
+        os.mkdir(info_path)
 
 
 def error_write(error_info):
@@ -71,7 +71,7 @@ class Log(threading.Thread):
         while self.__run:
             try:
                 self.write_log_info()
-            except BaseException, e:
+            except BaseException as e:
                 error_write(repr(e))
 
     def stop_thread(self):
@@ -107,7 +107,7 @@ class Log(threading.Thread):
             try:
                 self.__file_object.write(log_content)
                 print("yjl", log_content)
-            except BaseException, e:
+            except BaseException as e:
                 error_write(e)
         self.__file_object.flush()
 

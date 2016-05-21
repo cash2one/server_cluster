@@ -24,10 +24,8 @@ import http_logic.home
 
 import config
 
-
 HTTP_SERVER_NAME = "http_server"
 PORT = 8888
-
 
 class Home(tornado.web.RequestHandler):
     def get(self, *args, **kwargs):
@@ -93,6 +91,7 @@ class HttpApplication(tornado.web.Application):
         debug=True,
     )
     print(APP_SETTING)
+
     def __init__(self):
         tornado.web.Application.__init__(self, self.URLS, **self.APP_SETTING)
         self.__socket_listen = SocketListen()
@@ -130,7 +129,3 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         port = int(sys.argv[1])
     main(port)
-
-
-
-
