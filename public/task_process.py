@@ -87,7 +87,7 @@ class MultiProcess(object):
                 continue
             try:
                 callback(**kwargs)
-            except BaseException, e:
+            except BaseException as e:
                 public.simple_log.error_write(repr(e))
         self.on_finish()
 
@@ -202,7 +202,7 @@ class TimerThread(threading.Thread):
                 for name, task_manager in self.__manager.items():
                     task_manager.out_of_time_task(time_now)
 
-            except BaseException, e:
+            except BaseException as e:
                 public.simple_log.log(public.simple_log.ERROR, "error:%s \n" % (e))
 
     def stop_thread(self):

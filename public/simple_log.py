@@ -71,7 +71,7 @@ class Log(threading.Thread):
         while self.__run:
             try:
                 self.write_log_info()
-            except BaseException, e:
+            except BaseException as e:
                 error_write(repr(e))
 
     def stop_thread(self):
@@ -107,7 +107,7 @@ class Log(threading.Thread):
             try:
                 self.__file_object.write(log_content)
                 print("yjl", log_content)
-            except BaseException, e:
+            except BaseException as e:
                 error_write(e)
         self.__file_object.flush()
 

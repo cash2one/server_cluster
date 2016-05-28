@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 class CommonException(Exception):
     def __init__(self, msg):
         self.__error_info = msg
-        print self.__str__()
+        print(self.__str__())
 
     def __str__(self):
         return self.__class__.__name__ + ":" + self.__error_info

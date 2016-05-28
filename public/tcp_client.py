@@ -64,7 +64,7 @@ class TcpClient(Connect):
         print("TcpClient start_client", self.__ip, self.__port)
         try:
             self.__stream = yield self.__client.connect(self.__ip, self.__port)
-        except BaseException, e:
+        except BaseException as e:
             self.add_time_callback()
             return
         self.on_auth_server()

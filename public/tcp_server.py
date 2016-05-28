@@ -8,8 +8,8 @@ import heapq
 import struct
 import time
 
-import tornado.tcpserver
 import tornado.ioloop
+import tornado.tcpserver
 
 import public.global_manager
 import public.simple_log
@@ -103,7 +103,6 @@ class ServerConnect(public.tcp_client.Connect):
     def __lt__(self, other):
         # print("lt", self.connect_time, other.connect_time)
         return self.connect_time <= other.connect_time
-
 
 class SimpleTcpServer(tornado.tcpserver.TCPServer):
     # def __init__(self, io_loop=None, ssl_options=None, max_buffer_size=None, read_chunk_size=None):
