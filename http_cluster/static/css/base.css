@@ -1,0 +1,13 @@
+.common-ul-background{
+    background-color: beige;
+}
+
+.common-special-b{
+    color: #e94d1c;
+}
+
+.common-row-background{
+    background: url("/static/img/1.jpg") no-repeat center;
+    background-size: cover;
+    -moz-background-size: cover;
+}

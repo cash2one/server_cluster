@@ -74,13 +74,19 @@ class WebSocketTest(tornado.websocket.WebSocketHandler):
         self.write_message("count:%d" % (count))
 
 
+class ShowPageTest(tornado.web.RequestHandler):
+    def get(self, file_name):
+        file_name = "%s.html" %(file_name)
+        self.render(file_name)
+
+
 class HttpApplication(tornado.web.Application):
     URLS = [
+        (r"/h5_test/(\w+)", ShowPageTest),
+
         (r'/home', Home),
         (r'/compose', Compose),
-
         (r'/web_socket_test', WebSocketTest),
-
         (r'/index', http_logic.index.Index),
         (r'/user/login', http_logic.user.login.Login),
         (r'/user/register', http_logic.user.register.UserRegister),
