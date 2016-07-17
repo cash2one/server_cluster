@@ -8,14 +8,14 @@ import struct
 import json
 import tornado.tcpclient
 import tornado.gen
-
+import public.pack_dict
 
 class Connect(object):
     _HEAD_SIZE = 4
 
     def __init__(self):
         self._protocol = False
-        self._data_buffer = ""
+        self._data_buffer = public.pack_dict.str2byte("")
         self._protocol_content_length = self._HEAD_SIZE
 
     def get_address_flag(self):
@@ -29,7 +29,7 @@ class Connect(object):
 
     def read_buffer_callback(self, size_buffer):
         self._data_buffer += size_buffer
-        print(self.get_address_flag(), "read_buffer_callback", len(size_buffer))
+        print(self.get_address_flag(), "read_buffer_callback", self._protocol_content_length, len(self._data_buffer))
         while self._data_buffer:
             if len(self._data_buffer) < self._protocol_content_length:
                 break
@@ -73,10 +73,10 @@ class TcpClient(Connect):
     def on_auth_server(self):
         raise NotImplementedError()
 
-    def send_data(self, data_dict):
+    def send_data(self, cmd_int, data_dict):
         send_string = json.dumps(data_dict)
-        data = struct.pack(b'!II', len(send_string) + 8, 1)
-        self.__stream.write(data + send_string)
+        data = struct.pack(b'!II', len(send_string) + 8, cmd_int)
+        self.__stream.write(data + public.pack_dict.str2byte(send_string))
 
     def on_close_callback(self, data):
         self.add_time_callback()

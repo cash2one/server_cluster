@@ -96,7 +96,7 @@ class HttpApplication(tornado.web.Application):
         static_path=os.path.join(os.path.dirname(__file__), "static"),
         debug=True,
     )
-    print(APP_SETTING)
+    print("current app setting:", APP_SETTING)
 
     def __init__(self):
         tornado.web.Application.__init__(self, self.URLS, **self.APP_SETTING)

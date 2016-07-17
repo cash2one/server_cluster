@@ -20,9 +20,9 @@ def handle_process(conn, data):
     command = struct.unpack(b"!I", data[:4])[0]
     data = data[4:]
     content = public.pack_dict.loads_json_unicode(data)
-    print(__name__, "handle_process", content)
+    print(__name__, "handle_process", command, content)
     process = HANDLE_PROCESS.get(command)
     if not process:
-        print(__name__, "handle_process no math", content)
+        print(__name__, "handle_process no math", command, content)
         return
     process(conn, content)

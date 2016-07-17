@@ -15,6 +15,7 @@ import config
 
 import client_logic.handle_client_process
 import root_logic.handle_root_process
+import root_logic.protocol
 
 
 class ConnectRootServer(public.tcp_client.TcpClient):
@@ -30,7 +31,7 @@ class ConnectRootServer(public.tcp_client.TcpClient):
             "server_id": config.CLIENT_SERVER_ID,
             "token": "asdfghJkl1234567",
         }
-        self.send_data(send_dict)
+        self.send_data(root_logic.protocol.ON_AUTH, send_dict)
 
 
 class ClientServerConnect(public.tcp_server.ServerConnect):
