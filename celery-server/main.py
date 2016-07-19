@@ -340,7 +340,7 @@ class WebWeixin(object):
             'BaseRequest': self.BaseRequest,
             'Msg': {
                 "Type": 1,
-                "Content": self._transcoding(word),
+                "Content": word,
                 "FromUserName": self.User['UserName'],
                 "ToUserName": to,
                 "LocalID": clientMsgId,
@@ -832,31 +832,30 @@ class WebWeixin(object):
         listenProcess = multiprocessing.Process(target=self.listenMsgMode)
         listenProcess.start()
 
-        while True:
-            text = input('')
-            if text == 'quit':
-                listenProcess.terminate()
-                logging.debug('[*] 退出微信')
-                exit()
-            elif text[:2] == '->':
-                [name, word] = text[2:].split(':')
-                if name == 'all':
-                    self.sendMsgToAll(word)
-                else:
-                    self.sendMsg(name, word)
-            elif text[:3] == 'm->':
-                [name, file] = text[3:].split(':')
-                self.sendMsg(name, file, True)
-            elif text[:3] == 'f->':
-                logging.debug('发送文件')
-            elif text[:3] == 'i->':
-                [name, file_name] = text[3:].split(':')
-                self.sendImg(name, file_name)
-                logging.debug('发送图片')
-            elif text[:3] == 'e->':
-                [name, file_name] = text[3:].split(':')
-                self.sendEmotion(name, file_name)
-                logging.debug('发送表情')
+        # while True:
+        #     text = input('')
+        #     if text == 'quit':
+        #         listenProcess.terminate()
+        #         logging.debug('[*] 退出微信')
+        #         exit()
+        #     elif text[:2] == '->':
+        #         [name, word] = text[2:].split(':')
+        #         if name == 'all':
+        #             self.sendMsgToAll(word)
+        #         else:
+        #             self.sendMsg(name, word)
+        #     elif text[:3] == 'm->':
+        #         [name, file] = text[3:].split(':')
+        #         self.sendMsg(name, file, True)
+        #         logging.debug('发送文件')
+        #     elif text[:3] == 'i->':
+        #         [name, file_name] = text[3:].split(':')
+        #         self.sendImg(name, file_name)
+        #         logging.debug('发送图片')
+        #     elif text[:3] == 'e->':
+        #         [name, file_name] = text[3:].split(':')
+        #         self.sendEmotion(name, file_name)
+        #         logging.debug('发送表情')
 
     def _safe_open(self, path):
         if self.autoOpen:
@@ -885,16 +884,6 @@ class WebWeixin(object):
         qr.add_data(str)
         mat = qr.get_matrix()
         self._printQR(mat)  # qr.print_tty() or qr.print_ascii()
-
-    def _transcoding(self, data):
-        if not data:
-            return data
-        result = None
-        if type(data) == unicode:
-            result = data
-        elif type(data) == str:
-            result = data.decode('utf-8')
-        return result
 
     def _get(self, url, api=None):
         request = urllib.request.Request(url=url)
