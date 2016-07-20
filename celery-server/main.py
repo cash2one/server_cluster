@@ -10,6 +10,7 @@ import urllib.request
 import bs4
 import bs4.element
 import time
+import send_msg.weixin
 
 class GetFirstElement(object):
     def __init__(self):
@@ -53,6 +54,7 @@ def main():
         time_string, content = get_last_time_content()
         if last_time != time_string:
             last_time = time_string
+            send_msg.weixin.get_weixin_instance().sendMsg("CTO Club", content, False)
             print(last_time, content)
         time.sleep(20)
 

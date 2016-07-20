@@ -209,7 +209,7 @@ class WebWeixin(object):
             "ClientMsgId": int(time.time())
         }
         dic = self._post(url, params)
-        logging.debug("webwxstatusnotify url:%s, dic:%s" %(url, dic))
+        # logging.debug("webwxstatusnotify url:%s, dic:%s" %(url, dic))
         return dic['BaseResponse']['Ret'] == 0
 
     def webwxgetcontact(self):
@@ -322,8 +322,8 @@ class WebWeixin(object):
             'rr': ~int(time.time())
         }
         dic = self._post(url, params)
-        if self.DEBUG:
-            logging.debug(json.dumps(dic, indent=4))
+        # if self.DEBUG:
+        #     logging.debug(json.dumps(dic, indent=4))
 
         if dic['BaseResponse']['Ret'] == 0:
             self.SyncKey = dic['SyncKey']
@@ -469,7 +469,7 @@ class WebWeixin(object):
         data = json.dumps(data_json, ensure_ascii=False).encode('utf8')
         r = requests.post(url, data=data, headers=headers)
         dic = r.json()
-        logging.debug(json.dumps(dic, indent=4))
+        # logging.debug(json.dumps(dic, indent=4))
         return dic['BaseResponse']['Ret'] == 0
 
     def _saveFile(self, filename, data, api=None):
@@ -479,7 +479,7 @@ class WebWeixin(object):
             if not os.path.exists(dirName):
                 os.makedirs(dirName)
             fn = os.path.join(dirName, filename)
-            logging.debug('Saved file: %s' % fn)
+            # logging.debug('Saved file: %s' % fn)
             with open(fn, 'wb') as f:
                 f.write(data)
                 f.close()
@@ -576,7 +576,7 @@ class WebWeixin(object):
 
     def getUSerID(self, name):
         for member in self.MemberList:
-            if name == member['RemarkName'] or name == member['NickName']:
+            if name == member['RemarkName'] or name == member['NickName'] or member['UserName'] == name:
                 return member['UserName']
         return None
 
@@ -588,7 +588,7 @@ class WebWeixin(object):
         content = None
 
         msg = message
-        logging.debug(msg)
+        # logging.debug(msg)
 
         if msg['raw_msg']:
             srcName = self.getUserRemarkName(msg['raw_msg']['FromUserName'])
@@ -832,30 +832,30 @@ class WebWeixin(object):
         listenProcess = multiprocessing.Process(target=self.listenMsgMode)
         listenProcess.start()
 
-        while True:
-            text = input('')
-            if text == 'quit':
-                listenProcess.terminate()
-                logging.debug('[*] 退出微信')
-                exit()
-            elif text[:2] == '->':
-                [name, word] = text[2:].split(':')
-                if name == 'all':
-                    self.sendMsgToAll(word)
-                else:
-                    self.sendMsg(name, word)
-            elif text[:3] == 'm->':
-                [name, file] = text[3:].split(':')
-                self.sendMsg(name, file, True)
-                logging.debug('发送文件')
-            elif text[:3] == 'i->':
-                [name, file_name] = text[3:].split(':')
-                self.sendImg(name, file_name)
-                logging.debug('发送图片')
-            elif text[:3] == 'e->':
-                [name, file_name] = text[3:].split(':')
-                self.sendEmotion(name, file_name)
-                logging.debug('发送表情')
+        # while True:
+        #     text = input('')
+        #     if text == 'quit':
+        #         listenProcess.terminate()
+        #         logging.debug('[*] 退出微信')
+        #         exit()
+        #     elif text[:2] == '->':
+        #         [name, word] = text[2:].split(':')
+        #         if name == 'all':
+        #             self.sendMsgToAll(word)
+        #         else:
+        #             self.sendMsg(name, word)
+        #     elif text[:3] == 'm->':
+        #         [name, file] = text[3:].split(':')
+        #         self.sendMsg(name, file, True)
+        #         logging.debug('发送文件')
+        #     elif text[:3] == 'i->':
+        #         [name, file_name] = text[3:].split(':')
+        #         self.sendImg(name, file_name)
+        #         logging.debug('发送图片')
+        #     elif text[:3] == 'e->':
+        #         [name, file_name] = text[3:].split(':')
+        #         self.sendEmotion(name, file_name)
+        #         logging.debug('发送表情')
 
     def _safe_open(self, path):
         if self.autoOpen:
@@ -949,3 +949,6 @@ logger = logging.getLogger(__name__)
 coloredlogs.install(level='DEBUG')
 g_weixin = WebWeixin()
 g_weixin.start()
+
+def get_weixin_instance():
+    return g_weixin
