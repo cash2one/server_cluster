@@ -51,12 +51,15 @@ def get_last_time_content():
 def main():
     last_time = ""
     while True:
-        time_string, content = get_last_time_content()
-        if last_time != time_string:
-            last_time = time_string
-            send_msg.weixin.get_weixin_instance().sendMsg("CTO Club", content, False)
-            print(last_time, content)
-        time.sleep(20)
+        try:
+            time_string, content = get_last_time_content()
+            if last_time != time_string:
+                last_time = time_string
+                send_msg.weixin.get_weixin_instance().sendMsg("CTO Club", content, False)
+                print(last_time, content)
+            time.sleep(20)
+        except BaseException as e:
+            print("GetFirstElement Error:", e)
 
 if __name__ == "__main__":
     main()
