@@ -50,12 +50,18 @@ def get_last_time_content():
 
 def main():
     last_time = ""
+    send_map = {
+        "CTO Club" : "@@0e77fe411c3b9601fff3aeb13e0d98bd9649c6711887b699813adb0c26551d20",
+        "test1" : "@@bc8b739a1f9dcd023eb5ca8522364b14dbf870b6d59e7bc98df67f01bd31b24c",
+    }
     while True:
         try:
+            weixin_instance = send_msg.weixin.get_weixin_instance()
             time_string, content = get_last_time_content()
             if last_time != time_string:
                 last_time = time_string
-                send_msg.weixin.get_weixin_instance().sendMsg("CTO Club", content, False)
+                for group in weixin_instance.GroupList:
+                    weixin_instance.sendMsg(group['UserName'], content, False)
                 print(last_time, content)
             time.sleep(20)
         except BaseException as e:
