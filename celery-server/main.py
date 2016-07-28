@@ -50,10 +50,6 @@ def get_last_time_content():
 
 def main():
     last_time = ""
-    send_map = {
-        "CTO Club" : "@@0e77fe411c3b9601fff3aeb13e0d98bd9649c6711887b699813adb0c26551d20",
-        "test1" : "@@bc8b739a1f9dcd023eb5ca8522364b14dbf870b6d59e7bc98df67f01bd31b24c",
-    }
     while True:
         try:
             weixin_instance = send_msg.weixin.get_weixin_instance()
