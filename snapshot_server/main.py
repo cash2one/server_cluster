@@ -27,8 +27,8 @@ def create_picture(symbol):
     # ax1.set_ylim(low - 0.01, high + 0.01)
     ax1.autoscale_view()
     matplotlib.pyplot.setp(matplotlib.pyplot.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
-    # matplotlib.pyplot.show()
-    matplotlib.pyplot.savefig("test.png", dpi=40)
+    matplotlib.pyplot.show()
+    # matplotlib.pyplot.savefig("test.png", dpi=40)
 
 if __name__ == "__main__":
     symbol = "002202.SZ"

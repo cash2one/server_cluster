@@ -59,7 +59,7 @@ def main():
                 for group in weixin_instance.GroupList:
                     weixin_instance.sendMsg(group['UserName'], content, False)
                 print(last_time, content)
-            time.sleep(20)
+            time.sleep(400)
         except BaseException as e:
             print("GetFirstElement Error:", e)
 

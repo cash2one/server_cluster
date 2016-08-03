@@ -730,32 +730,35 @@ class WebWeixin(object):
         playWeChat = 0
         redEnvelope = 0
         while True:
-            self.lastCheckTs = time.time()
-            [retcode, selector] = self.synccheck()
-            logging.debug('retcode: %s, selector: %s' % (retcode, selector))
-            if retcode == '1100':
-                logging.debug('[*] 你在手机上登出了微信，债见')
-                break
-            if retcode == '1101':
-                logging.debug('[*] 你在其他地方登录了 WEB 版微信，债见')
-                break
-            elif retcode == '0':
-                if selector == '2':
-                    r = self.webwxsync()
-                    if r is not None:
-                        self.handleMsg(r)
-                elif selector == '6':
-                    # TODO
-                    redEnvelope += 1
-                    logging.debug('[*] 收到疑似红包消息 %d 次' % redEnvelope)
-                elif selector == '7':
-                    playWeChat += 1
-                    logging.debug('[*] 你在手机上玩微信被我发现了 %d 次' % playWeChat)
-                    r = self.webwxsync()
-                elif selector == '0':
-                    time.sleep(1)
-            if (time.time() - self.lastCheckTs) <= 20:
-                time.sleep(time.time() - self.lastCheckTs)
+            try:
+                self.lastCheckTs = time.time()
+                [retcode, selector] = self.synccheck()
+                logging.debug('retcode: %s, selector: %s' % (retcode, selector))
+                if retcode == '1100':
+                    logging.debug('[*] 你在手机上登出了微信，债见')
+                    break
+                if retcode == '1101':
+                    logging.debug('[*] 你在其他地方登录了 WEB 版微信，债见')
+                    break
+                elif retcode == '0':
+                    if selector == '2':
+                        r = self.webwxsync()
+                        if r is not None:
+                            self.handleMsg(r)
+                    elif selector == '6':
+                        # TODO
+                        redEnvelope += 1
+                        logging.debug('[*] 收到疑似红包消息 %d 次' % redEnvelope)
+                    elif selector == '7':
+                        playWeChat += 1
+                        logging.debug('[*] 你在手机上玩微信被我发现了 %d 次' % playWeChat)
+                        r = self.webwxsync()
+                    elif selector == '0':
+                        time.sleep(1)
+                if (time.time() - self.lastCheckTs) <= 20:
+                    time.sleep(time.time() - self.lastCheckTs)
+            except BaseException as e:
+                logging.debug("listenMsgMode Error %s" %(e))
 
     def sendMsg(self, name, word, isfile=False):
         id = self.getUSerID(name)
