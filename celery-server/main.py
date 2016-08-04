@@ -54,11 +54,12 @@ def main():
         try:
             weixin_instance = send_msg.weixin.get_weixin_instance()
             time_string, content = get_last_time_content()
+            content.replace("\n", "", -1)
             if last_time != time_string:
                 last_time = time_string
                 for group in weixin_instance.GroupList:
                     weixin_instance.sendMsg(group['UserName'], content, False)
-                print(last_time, content)
+                # print(last_time, content)
             time.sleep(400)
         except BaseException as e:
             print("GetFirstElement Error:", e)

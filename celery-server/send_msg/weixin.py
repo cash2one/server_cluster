@@ -648,13 +648,13 @@ class WebWeixin(object):
 
     def handleMsg(self, r):
         for msg in r['AddMsgList']:
-            logging.debug('[*] 你有新的消息，请注意查收')
+            # logging.debug('[*] 你有新的消息，请注意查收')
 
             if self.DEBUG:
                 fn = 'msg' + str(int(random.random() * 1000)) + '.json'
                 with open(fn, 'w') as f:
                     f.write(json.dumps(msg))
-                logging.debug('[*] 该消息已储存到文件: %s' % (fn))
+                # logging.debug('[*] 该消息已储存到文件: %s' % (fn))
 
             msgType = msg['MsgType']
             name = self.getUserRemarkName(msg['FromUserName'])
@@ -718,8 +718,8 @@ class WebWeixin(object):
                 raw_msg = {'raw_msg': msg, 'message': '%s 撤回了一条消息' % name}
                 self._showMsg(raw_msg)
             else:
-                logging.debug('[*] 该消息类型为: %d，可能是表情，图片, 链接或红包: %s' %
-                              (msg['MsgType'], json.dumps(msg)))
+                # logging.debug('[*] 该消息类型为: %d，可能是表情，图片, 链接或红包: %s' %
+                #               (msg['MsgType'], json.dumps(msg)))
                 raw_msg = {
                     'raw_msg': msg, 'message': '[*] 该消息类型为: %d，可能是表情，图片, 链接或红包' % msg['MsgType']}
                 self._showMsg(raw_msg)
@@ -736,10 +736,10 @@ class WebWeixin(object):
                 logging.debug('retcode: %s, selector: %s' % (retcode, selector))
                 if retcode == '1100':
                     logging.debug('[*] 你在手机上登出了微信，债见')
-                    break
+                    # break
                 if retcode == '1101':
                     logging.debug('[*] 你在其他地方登录了 WEB 版微信，债见')
-                    break
+                    # break
                 elif retcode == '0':
                     if selector == '2':
                         r = self.webwxsync()
@@ -748,13 +748,15 @@ class WebWeixin(object):
                     elif selector == '6':
                         # TODO
                         redEnvelope += 1
-                        logging.debug('[*] 收到疑似红包消息 %d 次' % redEnvelope)
+                        # logging.debug('[*] 收到疑似红包消息 %d 次' % redEnvelope)
                     elif selector == '7':
                         playWeChat += 1
-                        logging.debug('[*] 你在手机上玩微信被我发现了 %d 次' % playWeChat)
+                        # logging.debug('[*] 你在手机上玩微信被我发现了 %d 次' % playWeChat)
                         r = self.webwxsync()
                     elif selector == '0':
                         time.sleep(1)
+                else:
+                    logging.debug("listenMsgMode %s" %(retcode))
                 if (time.time() - self.lastCheckTs) <= 20:
                     time.sleep(time.time() - self.lastCheckTs)
             except BaseException as e:
@@ -767,16 +769,16 @@ class WebWeixin(object):
                 with open(word, 'r') as f:
                     for line in f.readlines():
                         line = line.replace('\n', '')
-                        if self.webwxsendmsg(line, id):
-                            logging.info('sendMsg [成功]')
-                        else:
-                            logging.info('sendMsg [失败]')
-                        time.sleep(1)
+                        self.webwxsendmsg(line, id)
+                        # if self.webwxsendmsg(line, id):
+                        #     logging.info('sendMsg [成功]')
+                        # else:
+                        #     logging.info('sendMsg [失败]')
             else:
-                if self.webwxsendmsg(word, id):
-                    logging.debug('[*] 消息发送成功')
-                else:
-                    logging.debug('[*] 消息发送失败')
+                self.webwxsendmsg(word, id)
+                    # logging.debug('[*] 消息发送成功')
+                # else:
+                #     logging.debug('[*] 消息发送失败')
         else:
             logging.debug('[*] 此用户不存在')
 
